@@ -1,16 +1,18 @@
+import 'package:w_chat/src/models/chat_models.sg.dart';
 import 'package:w_module/w_module.dart';
 
 class ChatAgentEvents extends EventsCollection {
-  // final Event<String> onChatGptResponse;
-  final Event<String> onUserSubmission;
+  final Event onAgentTrained;
+  final Event<ChatMessage> onAgentResponse;
+  final Event<ChatMessage> onUserSubmission;
 
   ChatAgentEvents(DispatchKey key)
-      :
-        // onChatGptResponse = Event(key),
-        onUserSubmission = Event(key),
+      : onAgentResponse = Event<ChatMessage>(key),
+        onAgentTrained = Event(key),
+        onUserSubmission = Event<ChatMessage>(key),
         super(key) {
     [
-      // onChatGptResponse,
+      onAgentResponse,
       onUserSubmission,
     ].forEach(manageEvent);
   }

@@ -4,14 +4,18 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
-import '../ui/chat_agent_dialog_item.dart';
+import '../models/chat_models.sg.dart';
 
 part 'chat_agent_view_state.sg.g.dart';
 
 abstract class ChatAgentViewState extends Object
     implements Built<ChatAgentViewState, ChatAgentViewStateBuilder> {
-  factory ChatAgentViewState([Function(ChatAgentViewStateBuilder b) updates]) =
-      _$ChatAgentViewState;
+  factory ChatAgentViewState([updates(ChatAgentViewStateBuilder b)]) =>
+      _$ChatAgentViewState((ChatAgentViewStateBuilder b) => b
+        ..isLoading = false
+        ..messages = SetBuilder({})
+        ..update(updates));
+
   ChatAgentViewState._();
 
   static Serializer<ChatAgentViewState> get serializer =>
@@ -19,5 +23,7 @@ abstract class ChatAgentViewState extends Object
 
   bool get isLoading;
 
-  BuiltSet<ChatAgentMessage> get messages;
+  BuiltSet<ChatMessage> get messages;
+
+  User get currentUser;
 }

@@ -1,7 +1,9 @@
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
 import 'package:w_module/w_module.dart';
+import 'package:wdesk_sdk/experience_framework.dart';
 
+import '../models/chat_models.sg.dart';
 import '../redux/chat_agent_middleware.dart';
 import '../redux/chat_agent_reducer.dart';
 import '../redux/chat_agent_view_state.sg.dart';
@@ -11,17 +13,18 @@ import 'chat_agent_components.dart';
 import 'chat_agent_events.dart';
 
 class ChatAgentModule extends Module {
-  final DispatchKey _dispatchKey = new DispatchKey('chatGpt');
+  final DispatchKey _dispatchKey = new DispatchKey('chatAgentDispatchKey');
 
+  final AppContext appContext;
   final ChatAiServiceClient chatClient;
 
-  ChatAgentModule({@required this.chatClient});
+  ChatAgentModule({@required this.appContext, @required this.chatClient});
 
   Store<ChatAgentViewState> _store;
 
   ChatAgentModuleComponents _components;
 
-  ChatAgenApi _api;
+  ChatAgentApi _api;
 
   ChatAgentEvents _events;
 
@@ -29,7 +32,7 @@ class ChatAgentModule extends Module {
   ChatAgentModuleComponents get components => _components;
 
   @override
-  ChatAgenApi get api => _api;
+  ChatAgentApi get api => _api;
 
   @override
   ChatAgentEvents get events => _events;
@@ -39,10 +42,24 @@ class ChatAgentModule extends Module {
     await super.onLoad();
 
     _store = Store<ChatAgentViewState>(chatAgentReducer(),
-        middleware: [...chatAgentMiddlewares(chatClient: chatClient)]);
+        initialState: _buildInitialState(),
+        middleware: [
+          ...chatAgentMiddlewares(
+            dispatchKey: _dispatchKey,
+            chatClient: chatClient,
+            events: _events,
+          )
+        ]);
 
     _events = ChatAgentEvents(_dispatchKey);
-    _api = ChatAgenApi();
+    _api = ChatAgentApi(_store);
     _components = ChatAgentModuleComponents();
   }
+
+  ChatAgentViewState _buildInitialState() =>
+      ChatAgentViewState((ChatAgentViewStateBuilder b) => b
+        ..currentUser = User((UserBuilder ub) => ub
+              ..fullName = appContext.session.context.profile.displayName
+              ..resourceId = appContext.session.context.userResourceId)
+            .toBuilder());
 }

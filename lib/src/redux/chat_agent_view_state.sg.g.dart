@@ -25,8 +25,11 @@ class _$ChatAgentViewStateSerializer
           specifiedType: const FullType(bool)),
       'messages',
       serializers.serialize(object.messages,
-          specifiedType: const FullType(
-              BuiltSet, const [const FullType(ChatAgentMessage)])),
+          specifiedType:
+              const FullType(BuiltSet, const [const FullType(ChatMessage)])),
+      'currentUser',
+      serializers.serialize(object.currentUser,
+          specifiedType: const FullType(User)),
     ];
 
     return result;
@@ -51,8 +54,12 @@ class _$ChatAgentViewStateSerializer
         case 'messages':
           result.messages.replace(serializers.deserialize(value,
                   specifiedType: const FullType(
-                      BuiltSet, const [const FullType(ChatAgentMessage)]))
+                      BuiltSet, const [const FullType(ChatMessage)]))
               as BuiltSet<Object>);
+          break;
+        case 'currentUser':
+          result.currentUser.replace(serializers.deserialize(value,
+              specifiedType: const FullType(User)) as User);
           break;
       }
     }
@@ -65,17 +72,22 @@ class _$ChatAgentViewState extends ChatAgentViewState {
   @override
   final bool isLoading;
   @override
-  final BuiltSet<ChatAgentMessage> messages;
+  final BuiltSet<ChatMessage> messages;
+  @override
+  final User currentUser;
 
   factory _$ChatAgentViewState(
           [void Function(ChatAgentViewStateBuilder) updates]) =>
       (new ChatAgentViewStateBuilder()..update(updates)).build();
 
-  _$ChatAgentViewState._({this.isLoading, this.messages}) : super._() {
+  _$ChatAgentViewState._({this.isLoading, this.messages, this.currentUser})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(
         isLoading, 'ChatAgentViewState', 'isLoading');
     BuiltValueNullFieldError.checkNotNull(
         messages, 'ChatAgentViewState', 'messages');
+    BuiltValueNullFieldError.checkNotNull(
+        currentUser, 'ChatAgentViewState', 'currentUser');
   }
 
   @override
@@ -92,19 +104,22 @@ class _$ChatAgentViewState extends ChatAgentViewState {
     if (identical(other, this)) return true;
     return other is ChatAgentViewState &&
         isLoading == other.isLoading &&
-        messages == other.messages;
+        messages == other.messages &&
+        currentUser == other.currentUser;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, isLoading.hashCode), messages.hashCode));
+    return $jf($jc($jc($jc(0, isLoading.hashCode), messages.hashCode),
+        currentUser.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ChatAgentViewState')
           ..add('isLoading', isLoading)
-          ..add('messages', messages))
+          ..add('messages', messages)
+          ..add('currentUser', currentUser))
         .toString();
   }
 }
@@ -117,11 +132,14 @@ class ChatAgentViewStateBuilder
   bool get isLoading => _$this._isLoading;
   set isLoading(bool isLoading) => _$this._isLoading = isLoading;
 
-  SetBuilder<ChatAgentMessage> _messages;
-  SetBuilder<ChatAgentMessage> get messages =>
-      _$this._messages ??= new SetBuilder<ChatAgentMessage>();
-  set messages(SetBuilder<ChatAgentMessage> messages) =>
-      _$this._messages = messages;
+  SetBuilder<ChatMessage> _messages;
+  SetBuilder<ChatMessage> get messages =>
+      _$this._messages ??= new SetBuilder<ChatMessage>();
+  set messages(SetBuilder<ChatMessage> messages) => _$this._messages = messages;
+
+  UserBuilder _currentUser;
+  UserBuilder get currentUser => _$this._currentUser ??= new UserBuilder();
+  set currentUser(UserBuilder currentUser) => _$this._currentUser = currentUser;
 
   ChatAgentViewStateBuilder();
 
@@ -130,6 +148,7 @@ class ChatAgentViewStateBuilder
     if ($v != null) {
       _isLoading = $v.isLoading;
       _messages = $v.messages.toBuilder();
+      _currentUser = $v.currentUser.toBuilder();
       _$v = null;
     }
     return this;
@@ -154,12 +173,15 @@ class ChatAgentViewStateBuilder
           new _$ChatAgentViewState._(
               isLoading: BuiltValueNullFieldError.checkNotNull(
                   isLoading, 'ChatAgentViewState', 'isLoading'),
-              messages: messages.build());
+              messages: messages.build(),
+              currentUser: currentUser.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'messages';
         messages.build();
+        _$failedField = 'currentUser';
+        currentUser.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'ChatAgentViewState', _$failedField, e.toString());

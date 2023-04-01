@@ -1,17 +1,28 @@
-class UserPromptSubmission {
-  String userPrompt;
+import '../models/chat_models.sg.dart';
 
-  UserPromptSubmission(this.userPrompt);
+class UserPromptSubmission {
+  final ChatMessage message;
+
+  UserPromptSubmission(this.message);
 }
 
 class UserPromptSubmissionSuccess {
-  String agentResponse;
+  final ChatMessage agentResponse;
 
   UserPromptSubmissionSuccess(this.agentResponse);
 }
 
-class UserSubmissionFailed {
-  String errorMessage;
+class UserPromptSubmissionFailed {
+  final ChatMessage failedMessage;
+  final String errorMessage;
 
-  UserSubmissionFailed(this.errorMessage);
+  UserPromptSubmissionFailed(this.failedMessage, this.errorMessage);
 }
+
+class TrainAgent {
+  final dynamic trainingData;
+
+  TrainAgent(this.trainingData);
+}
+
+class TrainAgentSuccess {}

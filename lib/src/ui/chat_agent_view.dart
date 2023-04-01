@@ -1,11 +1,11 @@
 import 'package:over_react/over_react.dart';
-import 'package:over_react/over_react_redux.dart';
 import 'package:react_material_ui/react_material_ui.dart' as mui;
 import 'package:react_material_ui/styles/theme_provider.dart' as mui_theme;
+import 'package:w_chat/src/models/chat_models.sg.dart';
 
 import '../redux/chat_agent_actions.dart';
+import '../redux/chat_agent_view_context.dart';
 import 'chat_agent_dialog.dart';
-import 'chat_agent_dialog_item.dart';
 
 part 'chat_agent_view.over_react.g.dart';
 
@@ -15,30 +15,28 @@ mixin ChatAgentViewProps on UiProps {}
 
 // ignore: non_constant_identifier_names
 UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
+  final messages = useChatAgentSelector((s) => s.messages);
+  final isLoading = useChatAgentSelector((s) => s.isLoading);
+  final dispatch = useChatAgentDispatch();
+
   final StateHook<String> userInput = useState('');
-  final StateHook<Set<ChatAgentMessage>> messages = useState({});
-  final StateHook<bool> isLoading = useState(false);
-  final dispatch = useDispatch();
 
   void _handleInput(SyntheticFormEvent event) {
     userInput.set(event.target.value as String);
   }
 
-  void _onChatGptResponse(String gptResponse) {
-    messages.value.add(ChatAgentMessage(gptResponse, ChatGpt()));
-    isLoading.set(false);
-  }
+  ChatMessage _buildMessage() => ChatMessage((b) => b
+    ..text = userInput?.value?.trim() ?? ''
+    ..author = User((b) => b
+      ..fullName = 'Michael Pszonka'
+      ..resourceId = 'V0ZVc2VyHzUwNTUyMzY4MDMzOTU1ODQ'));
 
   void _onSubmit() {
-    final currentMsg = userInput?.value?.trim() ?? '';
+    final currentMsg = _buildMessage();
 
-    if (currentMsg.isEmpty) return;
-
-    messages.value.add(ChatAgentMessage(currentMsg,
-        User('Michael Pszonka', 'V0ZVc2VyHzUwNTUyMzY4MDMzOTU1ODQ')));
+    if (currentMsg.text.isEmpty) return;
 
     userInput.set('');
-    isLoading.set(true);
 
     dispatch(UserPromptSubmission(currentMsg));
   }
@@ -48,8 +46,8 @@ UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
     ..style = {'width': '100%'})(
     (mui.Box())(
       (ChatAgentDialog()
-        ..isLoading = isLoading.value
-        ..messages = messages.value)(),
+        ..isLoading = isLoading
+        ..messages = messages.toSet())(),
       (mui.Stack())(
         (mui.TextField()
           ..sx = {'marginBottom': '10px'}

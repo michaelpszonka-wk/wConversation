@@ -2,12 +2,14 @@ import 'package:over_react/over_react.dart';
 import 'package:react_material_ui/react_material_ui.dart' as mui;
 import 'package:web_skin_dart/component2/icon.dart';
 
+import '../models/chat_models.sg.dart';
+
 import 'chat_agent_dialog_item.dart';
 
 part 'chat_agent_dialog.over_react.g.dart';
 
 mixin ChatAgentDialogProps on UiProps {
-  Set<ChatAgentMessage> messages;
+  Set<ChatMessage> messages;
 
   bool isLoading;
 }
@@ -17,7 +19,7 @@ UiFactory<ChatAgentDialogProps> ChatAgentDialog = uiFunction((props) {
   final messages = props.messages ?? {};
   final isLoading = props.isLoading ?? false;
 
-  ReactElement __renderMessage(ChatAgentMessage msg) =>
+  ReactElement __renderMessage(ChatMessage msg) =>
       (ChatAgentDialogItem()..message = msg)();
 
   ReactElement __emptyView() => (mui.EmptyView()
