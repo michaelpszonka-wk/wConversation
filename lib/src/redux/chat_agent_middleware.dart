@@ -1,8 +1,10 @@
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
+import 'package:w_chat/src/models/chat_models.sg.dart';
 import 'package:w_chat/src/module/chat_agent_events.dart';
 import 'package:w_module/w_module.dart';
 
+import '../models/chat_model_utils.dart';
 import '../services/ai_service_client/chat_ai_service_client.dart';
 import 'chat_agent_actions.dart';
 import 'chat_agent_view_state.sg.dart';
@@ -23,9 +25,12 @@ TypedMiddleware<ChatAgentViewState, UserPromptSubmission>
             ChatAiServiceClient chatClient) =>
         TypedMiddleware((Store<ChatAgentViewState> store,
             UserPromptSubmission action, NextDispatcher next) {
+
           events.onUserSubmission(action.message, key);
+
           Future.delayed(Duration(seconds: 2), () {
-            // _onChatGptResponse('Some mock data to send back');
+            final agent = Agent();
+            store.dispatch(UserPromptSubmissionSuccess(agent.buildChatMessage('Some mock data to send back')));
           });
 
           // the real thing
@@ -34,7 +39,7 @@ TypedMiddleware<ChatAgentViewState, UserPromptSubmission>
           //   store.dispatch(UserPromptSubmissionSuccess(res.aiResponse));
           // }).catchError((e, st) {
           //   _log.severe('Error conversing with ai agent', e);
-          //   store.dispatch(UserSubmissionFailed('Apologies, but there was an issue conversing with the agent'))
+          //   store.dispatch(UserPromptSubmissionFailed(action.message, 'Error conversing with ai agent'));
           // });
 
           next(action);
@@ -44,9 +49,7 @@ TypedMiddleware<ChatAgentViewState, UserPromptSubmissionSuccess>
     onUserPromptSubmissionSuccess(DispatchKey key, ChatAgentEvents events) =>
         TypedMiddleware((Store<ChatAgentViewState> store,
             UserPromptSubmissionSuccess action, NextDispatcher next) {
-          // TODO do something real
           events.onAgentResponse(action.agentResponse, key);
-
           next(action);
         });
 

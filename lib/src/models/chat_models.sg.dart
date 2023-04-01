@@ -26,9 +26,7 @@ abstract class ChatMessage extends Object
   Author get author;
 }
 
-abstract class Author {
-  bool get isUser;
-}
+abstract class Author {}
 
 abstract class User extends Object
     with Author
@@ -41,9 +39,6 @@ abstract class User extends Object
   String get fullName;
 
   String get resourceId;
-
-  @override
-  bool get isUser => true;
 }
 
 abstract class Agent extends Object
@@ -53,7 +48,4 @@ abstract class Agent extends Object
   Agent._();
 
   static Serializer<Agent> get serializer => _$agentSerializer;
-
-  @override
-  bool get isUser => false;
 }

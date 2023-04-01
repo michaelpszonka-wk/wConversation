@@ -9,8 +9,6 @@ import 'chat_agent_dialog.dart';
 
 part 'chat_agent_view.over_react.g.dart';
 
-typedef OnUserSubmission = void Function(String userMessage);
-
 mixin ChatAgentViewProps on UiProps {}
 
 // ignore: non_constant_identifier_names
@@ -42,7 +40,7 @@ UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
   }
 
   return (mui_theme.UnifyThemeProvider()
-    ..key = 'chat-gpt-section'
+    ..key = 'chat-agent-view'
     ..style = {'width': '100%'})(
     (mui.Box())(
       (ChatAgentDialog()
