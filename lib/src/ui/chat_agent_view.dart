@@ -1,7 +1,7 @@
 import 'package:over_react/over_react.dart';
 import 'package:react_material_ui/react_material_ui.dart' as mui;
 import 'package:react_material_ui/styles/theme_provider.dart' as mui_theme;
-import 'package:w_chat/src/models/chat_models.sg.dart';
+import 'package:w_chat/src/models/chat_model_utils.dart';
 
 import '../redux/chat_agent_actions.dart';
 import '../redux/chat_agent_view_context.dart';
@@ -13,6 +13,7 @@ mixin ChatAgentViewProps on UiProps {}
 
 // ignore: non_constant_identifier_names
 UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
+  final currentUser = useChatAgentSelector((s) => s.currentUser);
   final messages = useChatAgentSelector((s) => s.messages);
   final isLoading = useChatAgentSelector((s) => s.isLoading);
   final dispatch = useChatAgentDispatch();
@@ -23,20 +24,20 @@ UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
     userInput.set(event.target.value as String);
   }
 
-  ChatMessage _buildMessage() => ChatMessage((b) => b
-    ..text = userInput?.value?.trim() ?? ''
-    ..author = User((b) => b
-      ..fullName = 'Michael Pszonka'
-      ..resourceId = 'V0ZVc2VyHzUwNTUyMzY4MDMzOTU1ODQ'));
+  // ChatMessage _buildMessage() => ChatMessage((b) => b
+  //   ..text =
+  //   ..author = User((b) => b
+  //     ..fullName = 'Michael Pszonka'
+  //     ..resourceId = 'V0ZVc2VyHzUwNTUyMzY4MDMzOTU1ODQ'));
 
   void _onSubmit() {
-    final currentMsg = _buildMessage();
+    final newMessage = currentUser.buildChatMessage(userInput?.value?.trim() ?? '');
 
-    if (currentMsg.text.isEmpty) return;
+    if (newMessage.text.isEmpty) return;
 
     userInput.set('');
 
-    dispatch(UserPromptSubmission(currentMsg));
+    dispatch(UserPromptSubmission(newMessage));
   }
 
   return (mui_theme.UnifyThemeProvider()
