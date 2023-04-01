@@ -24,12 +24,6 @@ UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
     userInput.set(event.target.value as String);
   }
 
-  // ChatMessage _buildMessage() => ChatMessage((b) => b
-  //   ..text =
-  //   ..author = User((b) => b
-  //     ..fullName = 'Michael Pszonka'
-  //     ..resourceId = 'V0ZVc2VyHzUwNTUyMzY4MDMzOTU1ODQ'));
-
   void _onSubmit() {
     final newMessage = currentUser.buildChatMessage(userInput?.value?.trim() ?? '');
 
@@ -47,22 +41,27 @@ UiFactory<ChatAgentViewProps> ChatAgentView = uiFunction((props) {
       (ChatAgentDialog()
         ..isLoading = isLoading
         ..messages = messages.toSet())(),
-      (mui.Stack())(
-        (mui.TextField()
-          ..sx = {'marginBottom': '10px'}
-          ..name = 'title'
-          ..value = userInput.value
-          ..onChange = _handleInput
-          ..size = mui.TextFieldSize.small
-          ..fullWidth = true
-          ..multiline = true
-          ..rows = 5)(),
-        (mui.Button()
-          ..sx = {'float': 'right'}
-          ..onClick = ((_) => _onSubmit)
-          ..color = mui.ButtonColor.primary
-          ..size = mui.ButtonSize.large)('Submit'),
-      ),
+      (mui.Box())(
+        (mui.Stack()
+          ..divider = (mui.Divider()..orientation = 'horizontal')()
+          ..spacing  = 1
+        )(
+          (mui.TextField()
+            ..sx = {'marginBottom': '10px'}
+            ..name = 'title'
+            ..value = userInput.value
+            ..onChange = _handleInput
+            ..size = mui.TextFieldSize.small
+            ..fullWidth = true
+            ..multiline = true
+            ..rows = 5)(),
+          (mui.Button()
+            ..sx = {'float': 'right'}
+            ..onClick = ((_) => _onSubmit())
+            ..color = mui.ButtonColor.primary
+            ..size = mui.ButtonSize.large)('Submit'),
+        ),
+      )
     ),
   );
 }, _$ChatAgentViewConfig);

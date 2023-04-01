@@ -26,4 +26,6 @@ abstract class ChatAgentViewState extends Object
   BuiltSet<ChatMessage> get messages;
 
   User get currentUser;
+
+  Agent get currentAgent;
 }

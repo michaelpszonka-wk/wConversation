@@ -21,7 +21,9 @@ ChatAgentViewState onUserPromptSubmitted(
 
 ChatAgentViewState onUserPromptSuccess(
         ChatAgentViewState state, UserPromptSubmissionSuccess action) =>
-    state.rebuild((b) => b..isLoading = false);
+    state.rebuild((b) => b
+      ..messages = SetBuilder({...state.messages, action.agentResponse})
+      ..isLoading = false);
 
 ChatAgentViewState onUserPromptFailed(
         ChatAgentViewState state, UserPromptSubmissionFailed action) =>

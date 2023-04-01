@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 import 'package:redux/redux.dart';
-import 'package:w_chat/src/models/chat_models.sg.dart';
 import 'package:w_chat/src/module/chat_agent_events.dart';
 import 'package:w_module/w_module.dart';
 
@@ -29,8 +28,7 @@ TypedMiddleware<ChatAgentViewState, UserPromptSubmission>
           events.onUserSubmission(action.message, key);
 
           Future.delayed(Duration(seconds: 2), () {
-            final agent = Agent();
-            store.dispatch(UserPromptSubmissionSuccess(agent.buildChatMessage('Some mock data to send back')));
+            store.dispatch(UserPromptSubmissionSuccess(store.state.currentAgent.buildChatMessage('Some mock data to send back')));
           });
 
           // the real thing
@@ -57,11 +55,15 @@ TypedMiddleware<ChatAgentViewState, TrainAgent> onTrainAgent(DispatchKey key,
         ChatAgentEvents events, ChatAiServiceClient chatAiServiceClient) =>
     TypedMiddleware((Store<ChatAgentViewState> store, TrainAgent action,
         NextDispatcher next) {
-      chatAiServiceClient.trainModel(action.trainingData).then((_) {
+
+      print('Great lets train some data: ${action.trainingData}');
+
+      // Real service call
+      // chatAiServiceClient.trainModel(action.trainingData).then((_) {
         store.dispatch(TrainAgentSuccess());
-      }).catchError((e, stackTrace) {
-        // TODO model training failed
-      });
+      // }).catchError((e, stackTrace) {
+      //   // TODO model training failed
+      // });
 
       next(action);
     });

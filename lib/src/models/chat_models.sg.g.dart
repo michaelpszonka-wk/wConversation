@@ -130,13 +130,52 @@ class _$AgentSerializer implements StructuredSerializer<Agent> {
   @override
   Iterable<Object> serialize(Serializers serializers, Agent object,
       {FullType specifiedType = FullType.unspecified}) {
-    return <Object>[];
+    final result = <Object>[
+      'fullName',
+      serializers.serialize(object.fullName,
+          specifiedType: const FullType(String)),
+      'type',
+      serializers.serialize(object.type,
+          specifiedType: const FullType(AgentType)),
+    ];
+    Object value;
+    value = object.resourceId;
+    if (value != null) {
+      result
+        ..add('resourceId')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
+    return result;
   }
 
   @override
   Agent deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    return new AgentBuilder().build();
+    final result = new AgentBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object value = iterator.current;
+      switch (key) {
+        case 'fullName':
+          result.fullName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'resourceId':
+          result.resourceId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'type':
+          result.type = serializers.deserialize(value,
+              specifiedType: const FullType(AgentType)) as AgentType;
+          break;
+      }
+    }
+
+    return result.build();
   }
 }
 
@@ -346,10 +385,20 @@ class UserBuilder implements Builder<User, UserBuilder> {
 }
 
 class _$Agent extends Agent {
+  @override
+  final String fullName;
+  @override
+  final String resourceId;
+  @override
+  final AgentType type;
+
   factory _$Agent([void Function(AgentBuilder) updates]) =>
       (new AgentBuilder()..update(updates)).build();
 
-  _$Agent._() : super._();
+  _$Agent._({this.fullName, this.resourceId, this.type}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(fullName, 'Agent', 'fullName');
+    BuiltValueNullFieldError.checkNotNull(type, 'Agent', 'type');
+  }
 
   @override
   Agent rebuild(void Function(AgentBuilder) updates) =>
@@ -361,24 +410,55 @@ class _$Agent extends Agent {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Agent;
+    return other is Agent &&
+        fullName == other.fullName &&
+        resourceId == other.resourceId &&
+        type == other.type;
   }
 
   @override
   int get hashCode {
-    return 26618063;
+    return $jf($jc(
+        $jc($jc(0, fullName.hashCode), resourceId.hashCode), type.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('Agent').toString();
+    return (newBuiltValueToStringHelper('Agent')
+          ..add('fullName', fullName)
+          ..add('resourceId', resourceId)
+          ..add('type', type))
+        .toString();
   }
 }
 
 class AgentBuilder implements Builder<Agent, AgentBuilder> {
   _$Agent _$v;
 
+  String _fullName;
+  String get fullName => _$this._fullName;
+  set fullName(String fullName) => _$this._fullName = fullName;
+
+  String _resourceId;
+  String get resourceId => _$this._resourceId;
+  set resourceId(String resourceId) => _$this._resourceId = resourceId;
+
+  AgentType _type;
+  AgentType get type => _$this._type;
+  set type(AgentType type) => _$this._type = type;
+
   AgentBuilder();
+
+  AgentBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _fullName = $v.fullName;
+      _resourceId = $v.resourceId;
+      _type = $v.type;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(Agent other) {
@@ -393,7 +473,12 @@ class AgentBuilder implements Builder<Agent, AgentBuilder> {
 
   @override
   _$Agent build() {
-    final _$result = _$v ?? new _$Agent._();
+    final _$result = _$v ??
+        new _$Agent._(
+            fullName: BuiltValueNullFieldError.checkNotNull(
+                fullName, 'Agent', 'fullName'),
+            resourceId: resourceId,
+            type: BuiltValueNullFieldError.checkNotNull(type, 'Agent', 'type'));
     replace(_$result);
     return _$result;
   }

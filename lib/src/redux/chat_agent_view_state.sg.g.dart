@@ -30,6 +30,9 @@ class _$ChatAgentViewStateSerializer
       'currentUser',
       serializers.serialize(object.currentUser,
           specifiedType: const FullType(User)),
+      'currentAgent',
+      serializers.serialize(object.currentAgent,
+          specifiedType: const FullType(Agent)),
     ];
 
     return result;
@@ -61,6 +64,10 @@ class _$ChatAgentViewStateSerializer
           result.currentUser.replace(serializers.deserialize(value,
               specifiedType: const FullType(User)) as User);
           break;
+        case 'currentAgent':
+          result.currentAgent.replace(serializers.deserialize(value,
+              specifiedType: const FullType(Agent)) as Agent);
+          break;
       }
     }
 
@@ -75,12 +82,15 @@ class _$ChatAgentViewState extends ChatAgentViewState {
   final BuiltSet<ChatMessage> messages;
   @override
   final User currentUser;
+  @override
+  final Agent currentAgent;
 
   factory _$ChatAgentViewState(
           [void Function(ChatAgentViewStateBuilder) updates]) =>
       (new ChatAgentViewStateBuilder()..update(updates)).build();
 
-  _$ChatAgentViewState._({this.isLoading, this.messages, this.currentUser})
+  _$ChatAgentViewState._(
+      {this.isLoading, this.messages, this.currentUser, this.currentAgent})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(
         isLoading, 'ChatAgentViewState', 'isLoading');
@@ -88,6 +98,8 @@ class _$ChatAgentViewState extends ChatAgentViewState {
         messages, 'ChatAgentViewState', 'messages');
     BuiltValueNullFieldError.checkNotNull(
         currentUser, 'ChatAgentViewState', 'currentUser');
+    BuiltValueNullFieldError.checkNotNull(
+        currentAgent, 'ChatAgentViewState', 'currentAgent');
   }
 
   @override
@@ -105,13 +117,16 @@ class _$ChatAgentViewState extends ChatAgentViewState {
     return other is ChatAgentViewState &&
         isLoading == other.isLoading &&
         messages == other.messages &&
-        currentUser == other.currentUser;
+        currentUser == other.currentUser &&
+        currentAgent == other.currentAgent;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, isLoading.hashCode), messages.hashCode),
-        currentUser.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, isLoading.hashCode), messages.hashCode),
+            currentUser.hashCode),
+        currentAgent.hashCode));
   }
 
   @override
@@ -119,7 +134,8 @@ class _$ChatAgentViewState extends ChatAgentViewState {
     return (newBuiltValueToStringHelper('ChatAgentViewState')
           ..add('isLoading', isLoading)
           ..add('messages', messages)
-          ..add('currentUser', currentUser))
+          ..add('currentUser', currentUser)
+          ..add('currentAgent', currentAgent))
         .toString();
   }
 }
@@ -141,6 +157,11 @@ class ChatAgentViewStateBuilder
   UserBuilder get currentUser => _$this._currentUser ??= new UserBuilder();
   set currentUser(UserBuilder currentUser) => _$this._currentUser = currentUser;
 
+  AgentBuilder _currentAgent;
+  AgentBuilder get currentAgent => _$this._currentAgent ??= new AgentBuilder();
+  set currentAgent(AgentBuilder currentAgent) =>
+      _$this._currentAgent = currentAgent;
+
   ChatAgentViewStateBuilder();
 
   ChatAgentViewStateBuilder get _$this {
@@ -149,6 +170,7 @@ class ChatAgentViewStateBuilder
       _isLoading = $v.isLoading;
       _messages = $v.messages.toBuilder();
       _currentUser = $v.currentUser.toBuilder();
+      _currentAgent = $v.currentAgent.toBuilder();
       _$v = null;
     }
     return this;
@@ -174,7 +196,8 @@ class ChatAgentViewStateBuilder
               isLoading: BuiltValueNullFieldError.checkNotNull(
                   isLoading, 'ChatAgentViewState', 'isLoading'),
               messages: messages.build(),
-              currentUser: currentUser.build());
+              currentUser: currentUser.build(),
+              currentAgent: currentAgent.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -182,6 +205,8 @@ class ChatAgentViewStateBuilder
         messages.build();
         _$failedField = 'currentUser';
         currentUser.build();
+        _$failedField = 'currentAgent';
+        currentAgent.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'ChatAgentViewState', _$failedField, e.toString());

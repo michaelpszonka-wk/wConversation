@@ -4,10 +4,12 @@ import 'package:w_module/w_module.dart';
 import 'package:wdesk_sdk/experience_framework.dart';
 
 import '../models/chat_models.sg.dart';
+import '../models/chat_model_extensions.dart';
 import '../redux/chat_agent_middleware.dart';
 import '../redux/chat_agent_reducer.dart';
 import '../redux/chat_agent_view_state.sg.dart';
 import '../services/ai_service_client/chat_ai_service_client.dart';
+import '../services/ai_service_client/implementations/chat_gpt_client.dart';
 import 'chat_agent_api.dart';
 import 'chat_agent_components.dart';
 import 'chat_agent_events.dart';
@@ -17,8 +19,14 @@ class ChatAgentModule extends Module {
 
   final AppContext appContext;
   final ChatAiServiceClient chatClient;
+  final AgentType agentType;
 
-  ChatAgentModule({@required this.appContext, @required this.chatClient});
+  ChatAgentModule({@required this.appContext, @required this.chatClient, @required this.agentType});
+
+  ChatAgentModule.forChatGpt({@required this.appContext, ChatAiServiceClient chatClient})
+      :
+        chatClient = chatClient ?? ChatGptService(),
+        agentType = AgentType.chatgpt;
 
   Store<ChatAgentViewState> _store;
 
@@ -40,6 +48,7 @@ class ChatAgentModule extends Module {
   @override
   Future<Null> onLoad() async {
     await super.onLoad();
+    _events = ChatAgentEvents(_dispatchKey);
 
     _store = Store<ChatAgentViewState>(chatAgentReducer(),
         initialState: _buildInitialState(),
@@ -51,13 +60,17 @@ class ChatAgentModule extends Module {
           )
         ]);
 
-    _events = ChatAgentEvents(_dispatchKey);
     _api = ChatAgentApi(_store);
-    _components = ChatAgentModuleComponents();
+    _components = ChatAgentModuleComponents(_store);
   }
 
   ChatAgentViewState _buildInitialState() =>
       ChatAgentViewState((ChatAgentViewStateBuilder b) => b
+        ..currentAgent = Agent((AgentBuilder ab) => ab
+          ..fullName = agentType.fullName
+          ..resourceId = agentType.userResourceId
+          ..type = agentType
+      ).toBuilder()
         ..currentUser = User((UserBuilder ub) => ub
               ..fullName = appContext.session.context.profile.displayName
               ..resourceId = appContext.session.context.userResourceId)

@@ -26,7 +26,11 @@ abstract class ChatMessage extends Object
   Author get author;
 }
 
-abstract class Author {}
+abstract class Author {
+  String get fullName;
+
+  String get resourceId;
+}
 
 abstract class User extends Object
     with Author
@@ -36,8 +40,10 @@ abstract class User extends Object
 
   static Serializer<User> get serializer => _$userSerializer;
 
+  @override
   String get fullName;
 
+  @override
   String get resourceId;
 }
 
@@ -47,5 +53,17 @@ abstract class Agent extends Object
   factory Agent([Function(AgentBuilder b) updates]) = _$Agent;
   Agent._();
 
+  @override
+  String get fullName;
+
+  @nullable
+  @override
+  String get resourceId;
+
+  AgentType get type;
+
   static Serializer<Agent> get serializer => _$agentSerializer;
 }
+
+enum AgentType { chatgpt }
+
