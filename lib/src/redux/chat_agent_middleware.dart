@@ -24,11 +24,11 @@ TypedMiddleware<ChatAgentViewState, UserPromptSubmission>
             ChatAiServiceClient chatClient) =>
         TypedMiddleware((Store<ChatAgentViewState> store,
             UserPromptSubmission action, NextDispatcher next) {
-
           events.onUserSubmission(action.message, key);
 
           Future.delayed(Duration(seconds: 2), () {
-            store.dispatch(UserPromptSubmissionSuccess(store.state.currentAgent.buildChatMessage('Some mock data to send back')));
+            store.dispatch(UserPromptSubmissionSuccess(store.state.currentAgent
+                .buildChatMessage('Some mock data to send back')));
           });
 
           // the real thing
@@ -55,12 +55,11 @@ TypedMiddleware<ChatAgentViewState, TrainAgent> onTrainAgent(DispatchKey key,
         ChatAgentEvents events, ChatAiServiceClient chatAiServiceClient) =>
     TypedMiddleware((Store<ChatAgentViewState> store, TrainAgent action,
         NextDispatcher next) {
-
       print('Great lets train some data: ${action.trainingData}');
 
       // Real service call
       // chatAiServiceClient.trainModel(action.trainingData).then((_) {
-        store.dispatch(TrainAgentSuccess());
+      store.dispatch(TrainAgentSuccess());
       // }).catchError((e, stackTrace) {
       //   // TODO model training failed
       // });

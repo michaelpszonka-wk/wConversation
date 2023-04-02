@@ -3,8 +3,8 @@ import 'package:redux/redux.dart';
 import 'package:w_module/w_module.dart';
 import 'package:wdesk_sdk/experience_framework.dart';
 
-import '../models/chat_models.sg.dart';
 import '../models/chat_model_extensions.dart';
+import '../models/chat_models.sg.dart';
 import '../redux/chat_agent_middleware.dart';
 import '../redux/chat_agent_reducer.dart';
 import '../redux/chat_agent_view_state.sg.dart';
@@ -21,11 +21,14 @@ class ChatAgentModule extends Module {
   final ChatAiServiceClient chatClient;
   final AgentType agentType;
 
-  ChatAgentModule({@required this.appContext, @required this.chatClient, @required this.agentType});
+  ChatAgentModule(
+      {@required this.appContext,
+      @required this.chatClient,
+      @required this.agentType});
 
-  ChatAgentModule.forChatGpt({@required this.appContext, ChatAiServiceClient chatClient})
-      :
-        chatClient = chatClient ?? ChatGptService(),
+  ChatAgentModule.forChatGpt(
+      {@required this.appContext, ChatAiServiceClient chatClient})
+      : chatClient = chatClient ?? ChatGptService(),
         agentType = AgentType.chatgpt;
 
   Store<ChatAgentViewState> _store;
@@ -69,8 +72,7 @@ class ChatAgentModule extends Module {
         ..currentAgent = Agent((AgentBuilder ab) => ab
           ..fullName = agentType.fullName
           ..resourceId = agentType.userResourceId
-          ..type = agentType
-      ).toBuilder()
+          ..type = agentType).toBuilder()
         ..currentUser = User((UserBuilder ub) => ub
               ..fullName = appContext.session.context.profile.displayName
               ..resourceId = appContext.session.context.userResourceId)

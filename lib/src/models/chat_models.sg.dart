@@ -66,4 +66,3 @@ abstract class Agent extends Object
 }
 
 enum AgentType { chatgpt }
-

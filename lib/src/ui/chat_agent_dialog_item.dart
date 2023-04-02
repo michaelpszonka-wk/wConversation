@@ -30,8 +30,7 @@ UiFactory<ChatAgentDialogItemProps> ChatAgentDialogItem = uiFunction((props) {
 
     return (UserAvatar()
       ..fullName = author.fullName
-      ..userResourceId = author.resourceId
-    )();
+      ..userResourceId = author.resourceId)();
   }
 
   return (mui.ListItem()..divider = true)(
@@ -39,7 +38,8 @@ UiFactory<ChatAgentDialogItemProps> ChatAgentDialogItem = uiFunction((props) {
     (mui.ListItemText()
       ..primary = message.text
       ..secondary = (mui.Stack()..direction = mui.StackDirection.row)(
-        (Dom.span()..className = 'text-muted')(_dateFormatter.format(message.msgTime)),
+        (Dom.span()
+          ..className = 'text-muted')(_dateFormatter.format(message.msgTime)),
       ))(),
   );
 }, _$ChatAgentDialogItemConfig);
