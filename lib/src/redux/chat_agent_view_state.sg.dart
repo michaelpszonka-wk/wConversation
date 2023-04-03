@@ -28,4 +28,5 @@ abstract class ChatAgentViewState extends Object
   User get currentUser;
 
   Agent get currentAgent;
+
 }

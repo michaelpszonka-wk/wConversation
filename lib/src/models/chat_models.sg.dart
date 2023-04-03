@@ -65,4 +65,4 @@ abstract class Agent extends Object
   static Serializer<Agent> get serializer => _$agentSerializer;
 }
 
-enum AgentType { chatgpt }
+enum AgentType { chatgpt, chatgpt_system }

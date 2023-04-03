@@ -7,5 +7,18 @@ extension AgentTypeExtensions on AgentType {
     return null;
   }
 
+  String get role {
+    if(this == AgentType.chatgpt)
+      return 'assistant';
+    else if(this == AgentType.chatgpt_system)
+      return 'system';
+
+    return null;
+  }
+
   String get userResourceId => null;
+}
+
+extension UserExtensions on User {
+  String get role => 'user';
 }

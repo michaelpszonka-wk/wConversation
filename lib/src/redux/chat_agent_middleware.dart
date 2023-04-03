@@ -3,8 +3,8 @@ import 'package:redux/redux.dart';
 import 'package:w_chat/src/module/chat_agent_events.dart';
 import 'package:w_module/w_module.dart';
 
+import '../clients/ai_service_client/chat_ai_service_client.dart';
 import '../models/chat_model_utils.dart';
-import '../services/ai_service_client/chat_ai_service_client.dart';
 import 'chat_agent_actions.dart';
 import 'chat_agent_view_state.sg.dart';
 
@@ -26,19 +26,12 @@ TypedMiddleware<ChatAgentViewState, UserPromptSubmission>
             UserPromptSubmission action, NextDispatcher next) {
           events.onUserSubmission(action.message, key);
 
-          Future.delayed(Duration(seconds: 2), () {
-            store.dispatch(UserPromptSubmissionSuccess(store.state.currentAgent
-                .buildChatMessage('Some mock data to send back')));
-          });
-
           // the real thing
-          // final jsonData = json.encode(currentMsg);
-          // chatClient.converse(action.userPrompt).then((res) {
-          //   store.dispatch(UserPromptSubmissionSuccess(res.aiResponse));
-          // }).catchError((e, st) {
-          //   _log.severe('Error conversing with ai agent', e);
-          //   store.dispatch(UserPromptSubmissionFailed(action.message, 'Error conversing with ai agent'));
-          // });
+          chatClient.converse(action.message.text).then((res) {
+            store.dispatch(UserPromptSubmissionSuccess(store.state.currentAgent.buildChatMessage(res.aiResponse)));
+          }).catchError((e, st) {
+            store.dispatch(UserPromptSubmissionFailed(action.message, 'Error conversing with ai agent'));
+          });
 
           next(action);
         });
@@ -55,14 +48,12 @@ TypedMiddleware<ChatAgentViewState, TrainAgent> onTrainAgent(DispatchKey key,
         ChatAgentEvents events, ChatAiServiceClient chatAiServiceClient) =>
     TypedMiddleware((Store<ChatAgentViewState> store, TrainAgent action,
         NextDispatcher next) {
-      print('Great lets train some data: ${action.trainingData}');
-
       // Real service call
-      // chatAiServiceClient.trainModel(action.trainingData).then((_) {
+      chatAiServiceClient.trainModel(action.trainingData).then((_) {
       store.dispatch(TrainAgentSuccess());
-      // }).catchError((e, stackTrace) {
-      //   // TODO model training failed
-      // });
+      }).catchError((e, stackTrace) {
+        // TODO model training failed
+      });
 
       next(action);
     });

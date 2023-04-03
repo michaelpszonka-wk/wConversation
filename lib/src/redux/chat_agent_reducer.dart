@@ -26,10 +26,9 @@ ChatAgentViewState onUserPromptSuccess(
       ..isLoading = false);
 
 ChatAgentViewState onUserPromptFailed(
-        ChatAgentViewState state, UserPromptSubmissionFailed action) =>
-    state.rebuild((b) => b
-      ..isLoading = false
-      ..messages = SetBuilder({
-        state.messages.toBuilder()
-          ..removeWhere((msg) => msg.uuid == action.failedMessage.uuid)
-      }));
+        ChatAgentViewState state, UserPromptSubmissionFailed action) {
+return state.rebuild((b) => b
+  ..isLoading = false
+  ..messages = SetBuilder(state.messages.toList()..removeWhere((msg) => msg.uuid == action.failedMessage.uuid)));
+
+}

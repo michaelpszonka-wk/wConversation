@@ -3,13 +3,13 @@ import 'package:redux/redux.dart';
 import 'package:w_module/w_module.dart';
 import 'package:wdesk_sdk/experience_framework.dart';
 
+import '../clients/ai_service_client/chat_ai_service_client.dart';
+import '../clients/ai_service_client/implementations/chat_gpt_client.dart';
 import '../models/chat_model_extensions.dart';
 import '../models/chat_models.sg.dart';
 import '../redux/chat_agent_middleware.dart';
 import '../redux/chat_agent_reducer.dart';
 import '../redux/chat_agent_view_state.sg.dart';
-import '../services/ai_service_client/chat_ai_service_client.dart';
-import '../services/ai_service_client/implementations/chat_gpt_client.dart';
 import 'chat_agent_api.dart';
 import 'chat_agent_components.dart';
 import 'chat_agent_events.dart';
@@ -28,7 +28,7 @@ class ChatAgentModule extends Module {
 
   ChatAgentModule.forChatGpt(
       {@required this.appContext, ChatAiServiceClient chatClient})
-      : chatClient = chatClient ?? ChatGptService(),
+      : chatClient = chatClient ?? ChatGptClient(),
         agentType = AgentType.chatgpt;
 
   Store<ChatAgentViewState> _store;
